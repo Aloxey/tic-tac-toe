@@ -4,7 +4,7 @@ body {
 }
 
 ol, ul {
-  padding-left: 30px;
+  padding-left: 0px;
 }
 
 .board-row:after {
@@ -43,8 +43,13 @@ ol, ul {
 .game {
   display: flex;
   flex-direction: row;
+  margin-top: 20px;
 }
 
 .game-info {
   margin-left: 20px;
+}
+
+.top-container{
+        margin-left: 40%;
 }
