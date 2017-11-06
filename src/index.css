@@ -1,10 +1,25 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  text-transform: capitalize;
 }
 
 ol, ul {
   padding-left: 0px;
+}
+
+.top-container{
+    width: 100%;
+    margin-top: 40px;
+    position: relative;
+}
+
+.top-container-row{
+    display: flex;
+    flex-direction: row;
+    min-width: 500px;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .board-row:after {
@@ -44,12 +59,31 @@ ol, ul {
   display: flex;
   flex-direction: row;
   margin-top: 20px;
+  margin-left: 20px;
+}
+
+.board-itself{
+  margin-top: 20px;
 }
 
 .game-info {
   margin-left: 20px;
 }
 
-.top-container{
-        margin-left: 40%;
+
+.restart-btn{
+  text-align:  center;
+}
+
+.person{
+  text-align:  center;
+}
+
+.person-state{
+  font-size: 20px;
+  text-align:  center;
+}
+
+img {
+    border-radius: 50%;
 }

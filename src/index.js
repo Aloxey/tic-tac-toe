@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import axios from 'axios';
 
+//  This file includes all the functionallity for the tic-tac-to game
 
+
+//  Returns a signle <button> which used to put together 9 of them
+//  and create the tic-tac-toe board
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -12,6 +16,9 @@ function Square(props) {
   );
 }
 
+
+//  Returns a "board" - a <div> object that includes 9 "square"s
+//  in a shape of tic-tac-toe board
 class Board extends React.Component {
   renderSquare(i) {
     return (
@@ -24,7 +31,7 @@ class Board extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className= "board-itself">
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -45,6 +52,52 @@ class Board extends React.Component {
   }
 }
 
+
+//  Generates and returns inside a <div> name and image of random people 
+//  with https://randomuser.me/ API, 
+class Person extends React.Component {
+
+  constructor(props) {
+    super(props);
+  this.state = {
+    firstName: "First",
+    lastName: "lastName",
+    picUrl: "www.im.com"
+  }
+  }
+
+  componentDidMount() {
+  axios.get(
+    'https://randomuser.me/api/',  
+      { responseType: 'json',
+       dataType: 'json' } ) 
+      .then(response => {
+      var first = response.data.results[0].name.first;
+      var last = response.data.results[0].name.last;
+      var pic = response.data.results[0].picture.medium;
+
+      this.setState({
+        firstName: first,
+        lastName: last,
+        picUrl: pic
+      });
+
+      });
+    }
+
+  render() {
+    return (
+      <div className="person">
+        <ol><img src = {this.state.picUrl} alt="Pic"/></ol>
+        <ol>{this.state.firstName} {this.state.lastName}</ol>
+      </div>
+    );
+  }
+}
+
+
+//  Renders and returns all the pieces of the game together
+//  and returns them for display in the browser 
 class Game extends React.Component {
   constructor() {
     super();
@@ -59,20 +112,13 @@ class Game extends React.Component {
     };
   }
 
-
-
+  //  Handles the clicks in the game, creates functionallity
+  //  for adding X and O checks when there's a winner or a tie,
+  //  and saves the history of the game for possible usage
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-
-    let status;
-    if(history.length == 10){
-      status = "Draw";
-    }
-    else
-    {
-
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -87,9 +133,6 @@ class Game extends React.Component {
       xIsNext: !this.state.xIsNext
     });
   }
-  }
-
-
 
   jumpTo(step) {
     this.setState({
@@ -103,48 +146,16 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-  //  Gets the random users info
-  var usr1;
-  axios.get('https://randomuser.me/api/')
-   .then(function (response) {
-      usr1 = response;
-   });
+    //  Restart Button
+    const restart = 
+            <button className= "restart" onClick={() => this.jumpTo(0)}>
+              Restart
+            </button>;
 
-  var usr2;
-  axios.get('https://randomuser.me/api/')
-   .then(function (response) {
-      usr2 = response;
-   });
-
-   var json = JSON.parse(usr1);
-   var name = json.results[0].name.first;
-   console.log(name);
-
-
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-
-    const restart = history.map((step, move) => {
-      const desc = 'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move.get(1))}>{desc}</button>
-        </li>
-      );
-    });
-
-
+    //  Changes thew statues line if there's a winner or tie
     let status;
-    if (history.length == 10){
-      status = "Draw";
+    if (history.length === 10){
+      status = "Tie";
     }
     else if (winner) {
       status = "Winner: " + winner;
@@ -153,22 +164,32 @@ class Game extends React.Component {
     }
 
     return (
-      <div className="top-top-container">
       <div className="top-container">
-        <div>{status}</div>
-        <div className="game">
-         <div className="game-board">
-            <Board
-              squares={current.squares}
-              onClick={i => this.handleClick(i)}
-            />
-          </div>
-          <div className="game-info">
-        </div>    
-      </div>
-          <ol>{moves}</ol>
-          <ol>{restart}</ol>
-      </div>
+         
+         <div className="top-container-row">
+         <div className="person-container">
+         <Person />
+         <p className="person-state">X</p>
+         </div>
+          <div className="game">
+
+           <div className="game-board">
+              <div>{status}</div>
+              <Board
+               squares={current.squares}
+               onClick={i => this.handleClick(i)}
+                />
+              <ol className="restart-btn">{restart}</ol>
+           </div>
+
+           <div className="game-info">
+           </div>
+        </div>
+  <div className="person-container">
+   <Person />
+   <p className="person-state">O</p>
+   </div>
+       </div>
       </div>
     );
   }
