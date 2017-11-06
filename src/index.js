@@ -60,9 +60,9 @@ class Person extends React.Component {
   constructor(props) {
     super(props);
   this.state = {
-    firstName: "First",
-    lastName: "lastName",
-    picUrl: "www.im.com"
+    firstName: "",
+    lastName: "",
+    picUrl: ""
   }
   }
 
@@ -88,7 +88,7 @@ class Person extends React.Component {
   render() {
     return (
       <div className="person">
-        <ol><img src = {this.state.picUrl} alt="Pic"/></ol>
+        <ol><img src = {this.state.picUrl} alt=" "/></ol>
         <ol>{this.state.firstName} {this.state.lastName}</ol>
       </div>
     );
@@ -113,7 +113,7 @@ class Game extends React.Component {
   }
 
   //  Handles the clicks in the game, creates functionallity
-  //  for adding X and O checks when there's a winner or a tie,
+  //  for adding X and O to "square"s, checks when there's a winner or a tie,
   //  and saves the history of the game for possible usage
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -148,20 +148,35 @@ class Game extends React.Component {
 
     //  Restart Button
     const restart = 
-            <button className= "restart" onClick={() => this.jumpTo(0)}>
+            <button className= "restart" onClick={() => 
+              {
+                this.setState ({
+                   history: [
+                     {
+                        squares: Array(9).fill(null)
+                     }
+                    ],
+                   stepNumber: 0,
+                  xIsNext: true
+               });
+              }
+            }>
               Restart
             </button>;
 
     //  Changes thew statues line if there's a winner or tie
     let status;
+
     if (history.length === 10){
       status = "Tie";
     }
-    else if (winner) {
+
+    if (winner) {
       status = "Winner: " + winner;
-    } else {
+    } else if (history.length != 10){
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
-    }
+    }  
+
 
     return (
       <div className="top-container">
